@@ -16,7 +16,12 @@ bot.on("message", async (msg) => {
       {
         reply_markup: {
           keyboard: [
-            [{ text: "Заповніть форму", web_app: { url: webAppUrl } }],
+            [
+              {
+                text: "Заповніть форму",
+                web_app: { url: webAppUrl + "/form" },
+              },
+            ],
           ],
         },
       }
@@ -33,5 +38,24 @@ bot.on("message", async (msg) => {
         },
       }
     );
+  }
+
+  if (msg?.web_app_data?.data) {
+    try {
+      const data = JSON.parse(msg?.web_app_data?.data);
+
+      await bot.sendMessage(chatId, "Дякуємо за зворотній звязок");
+      await bot.sendMessage(chatId, "Ваша країна:" + data?.country);
+      await bot.sendMessage(chatId, "Ваша вулиця:" + data?.street);
+
+      setTimeout(async () => {
+        await bot.sendMessage(
+          chatId,
+          "Усю інформацію Ви отримаєту в цбому чаті"
+        );
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
   }
 });
